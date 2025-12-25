@@ -67,11 +67,13 @@
 В этом проекте используется **LoRA (Low-Rank Adaptation)** для параметро-эффективного дообучения языковой модели. Ниже приведены наиболее важные строки кода, определяющие корректность и качество обучения.
 
 ### **3.1. Загрузка базовой модели**
-`base_model = AutoModelForCausalLM.from_pretrained(
+```
+base_model = AutoModelForCausalLM.from_pretrained(
 model_name, # Qwen/Qwen2.5-0.5B-Instruct
 torch_dtype=torch.float16, # ↓ VRAM с 2GB до 1GB
 device_map="auto" # Авто-распределение по GPU
-)`
+)
+```
 
 **Назначение:**
 - Загружает **instruction-модель** для генерации текста
