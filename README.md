@@ -10,7 +10,7 @@
 
 ## Цель проекта
 
-Дообучение **Qwen2.5-0.5B-Instruct** с помощью **LoRA** на датасете из **150 примеров** по видеомонтажу.  
+Дообучение **Qwen2.5-0.5B-Instruct** с помощью **LoRA** на датасете из **250 примеров** по видеомонтажу.  
 Демонстрация перехода от **общей модели** → **начинающий по Premiere Pro/DaVinci Resolve**.
 
 ## 1. Выбор модели: Qwen2.5-0.5B-Instruct 
@@ -38,7 +38,7 @@ base_model = AutoModelForCausalLM.from_pretrained(
 )
 ```
 
-## 2. Датасет: Видеомонтаж (150 примеров)
+## 2. Датасет: Видеомонтаж (250 примеров)
 
 **Тема:** Терминология и рабочие процессы видеомонтажа
 
@@ -91,7 +91,21 @@ base_model = AutoModelForCausalLM.from_pretrained(
 - **Критично** для instruction-моделей (chat/instruct)
 
 **3.3 Использование LoRA**
-```--use_lora
+```
+lora_config = LoraConfig(
+    r=32,
+    lora_alpha=64,
+    target_modules=[
+        "q_proj", "k_proj", "v_proj", "o_proj",
+        "gate_proj", "up_proj", "down_proj",
+    ],
+    lora_dropout=0.05,
+    bias="none",
+    task_type="CAUSAL_LM",
+)
+
+model = get_peft_model(model, lora_config)
+
 ```
 - Активирует параметро-эффективное обучение без изменения базовых весов модели.
 
@@ -115,7 +129,7 @@ python train_model.py
 | Параметр | Значение | Назначение |
 |----------|----------|------------|
 | **`--model_name`** | `Qwen/Qwen2.5-0.5B-Instruct` | Базовая модель (500M параметров, русский язык, instruct-версия) |
-| **`--data_path`** | `data.jsonl` | Путь к датасету (150 пар prompt/response в JSONL формате) |
+| **`--data_path`** | `data.jsonl` | Путь к датасету (250 пар prompt/response в JSONL формате) |
 | **`--output_dir`** | `./my-lora-model-best` | Папка для сохранения |
 | **`--use_lora`** | (flag) | LoRA вместо полного обучения |
 
@@ -136,6 +150,10 @@ python train_model.py
 |----------|----------|--------|
 | **`--max_length`** | `512` | Максимальная длина последовательности (prompt + response) |
 | **`--per_device_train_batch_size`** | `4` | Размер батча на GPU ( 4 примера за раз) |
+
+
+### Графики training loss и learning rate
+<img width="790" height="590" alt="Без названия" src="https://github.com/user-attachments/assets/9697cd44-c14f-4b11-bc81-f1dac4f35a90" />
 
 
 ## 4. Сравнение ответов BASE vs LoRA (3 попытки)
