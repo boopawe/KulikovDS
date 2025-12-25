@@ -1,0 +1,11 @@
+!python train_model.py \
+  --model_name Qwen/Qwen2.5-0.5B-Instruct \
+  --data_path data.jsonl \
+  --output_dir ./my-lora-model-best \
+  --use_lora \
+  --lora_r 32 \
+  --lora_alpha 64 \
+  --learning_rate 2e-4 \
+  --num_train_epochs 10 \
+  --max_length 512 \
+  --per_device_train_batch_size 4
