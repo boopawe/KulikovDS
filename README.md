@@ -90,7 +90,8 @@ base_model = AutoModelForCausalLM.from_pretrained(
 - **Критично** для instruction-моделей (chat/instruct)
 
 **3.3 Использование LoRA**
-`--use_lora`
+```--use_lora
+```
 - Активирует параметро-эффективное обучение без изменения базовых весов модели.
 
 **3.4. Основные параметры LoRA**
