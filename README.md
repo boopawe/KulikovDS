@@ -196,4 +196,3 @@ python train_model.py
 ### 5.4. Скриншот вывода обученной модели.
 <img width="1703" height="215" alt="image" src="https://github.com/user-attachments/assets/5f186160-058b-4ced-a9dd-7987c11f32fc" />
 
-### 5.4. Скриншот вывода обученной модели.
