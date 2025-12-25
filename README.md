@@ -30,12 +30,13 @@
 - Нужна была **"простенькая"** модель, которая значительно слабее других.
 
 Модель загружается следующим образом:
-`base_model = AutoModelForCausalLM.from_pretrained(
+```
+base_model = AutoModelForCausalLM.from_pretrained(
     model_name,
     torch_dtype=torch.float16,
     device_map="auto"
 )
-`
+```
 
 ## 2. Датасет: Видеомонтаж (150 примеров)
 
