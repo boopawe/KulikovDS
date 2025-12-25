@@ -3,14 +3,15 @@ import torch
 
 model_name = "Qwen/Qwen2.5-0.5B-Instruct"
 
-tokenizer = AutoTokenizer.from_pretrained(model_name)
+tokenizer = AutoTokenizer.from_pretrained(model_name, trust_remote_code=True)
 if tokenizer.pad_token is None:
     tokenizer.pad_token = tokenizer.eos_token
 
 base_model = AutoModelForCausalLM.from_pretrained(
     model_name,
-    torch_dtype=torch.float16,
-    device_map="auto"
+    dtype=torch.float16,
+    device_map="auto",
+    trust_remote_code=True,
 )
 
 test_prompts = [
@@ -21,19 +22,21 @@ test_prompts = [
 ]
 
 def generate_plain(model, tokenizer, prompt):
-    inputs = tokenizer(prompt, return_tensors="pt").to(model.device)
+    text = f"Вопрос: {prompt}\nОтвет:"
+    inputs = tokenizer(text, return_tensors="pt").to(model.device)
 
     outputs = model.generate(
         **inputs,
-        max_new_tokens=70,
-        temperature=0.5,
+        max_new_tokens=50,
+        temperature=0.2,
         top_p=0.9,
-        repetition_penalty=1.25,
-        do_sample=True
+        do_sample=True,
+        repetition_penalty=1.05,
+        eos_token_id=tokenizer.eos_token_id,
     )
 
-    text = tokenizer.decode(outputs[0], skip_special_tokens=True)
-    return text[len(prompt):].strip()
+    decoded = tokenizer.decode(outputs[0], skip_special_tokens=True)
+    return decoded.split("Ответ:")[-1].strip()
 
 print("=== БАЗОВАЯ МОДЕЛЬ (ДО ОБУЧЕНИЯ) ===")
 base_answers = {}
