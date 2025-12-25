@@ -4,7 +4,7 @@
 **Группа: 21612**  
 **Тема: "Обучение LLM с помощью LoRA на специализированном датасете"**
 
-[![Colab](https://colab.research.google.com/assets/colab-badge.svg)]((https://colab.research.google.com/drive/1g6rVFZRSPiyTh-LkjOeGaJOx8ZO7vMHf?usp=sharing))
+[![Colab](https://colab.research.google.com/drive/1g6rVFZRSPiyTh-LkjOeGaJOx8ZO7vMHf?usp=sharing)
 
 ---
 
