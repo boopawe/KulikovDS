@@ -176,11 +176,7 @@ LoRA (Low-Rank Adaptation) — это метод дообучения больш
 ![LoRA Architecture](https://huggingface.co/datasets/huggingface/documentation-images/resolve/main/peft/lora_diagram.png)
 *LoRA добавляет низкоранговые матрицы ΔW = B×A только к весам attention (Q, K, V, O).*
 
----
 
-### Описание элементов схемы
-
-#### **1. Базовая матрица весов**
 Формула исходного слоя:
 \[
 h = W₀ \times x
@@ -189,7 +185,6 @@ h = W₀ \times x
 - **x** — входной вектор (эмбеддинг)
 - **h** — результат слоя (output hidden state)
 
-#### **2. LoRA**
 Модифицированное выражение:
 \[
 h = (W₀ + ΔW) \times x = W₀ \times x + B \times A \times x
@@ -201,9 +196,7 @@ h = (W₀ + ΔW) \times x = W₀ \times x + B \times A \times x
 | **B** | `r × k` | Восстановление (up-projection) | Инициализация нулями |
 | **ΔW = B×A** | `d × k` | Поправка к основным весам | Обучаемые параметры |
 
----
 
-### Параметры на рисунке
 
 | Параметр | Значение | Описание |
 |-----------|-----------|---------|
@@ -217,7 +210,6 @@ h = (W₀ + ΔW) \times x = W₀ \times x + B \times A \times x
 ΔW × x = \frac{α}{r} × (B × A × x)
 \]
 
----
 
 ### Что обучается
 
