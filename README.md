@@ -209,7 +209,7 @@ LoRA обучает только свои маленькие изменения 
 Благодаря этому дообучение идёт **в 100 раз быстрее** и требует **в десятки раз меньше памяти**.
 
 
-**3.9. Графики `training loss` и `learning rate` во время обучения**
+### **3.9. Графики `training loss` и `learning rate` во время обучения**
 <img width="790" height="590" alt="Без названия" src="https://github.com/user-attachments/assets/9697cd44-c14f-4b11-bc81-f1dac4f35a90" />
 
 
