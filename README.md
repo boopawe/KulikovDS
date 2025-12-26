@@ -168,6 +168,10 @@ python train_model.py
 | **`--max_length`** | `512` | Максимальная длина последовательности (prompt + response) |
 | **`--per_device_train_batch_size`** | `4` | Размер батча на GPU ( 4 примера за раз) |
 
+![LoRA Architecture](https://huggingface.co/datasets/huggingface/documentation-images/resolve/main/peft/lora_diagram.png)
+
+*LoRA добавляет низкоранговые матрицы ΔW = B×A только к весам attention (Q,K,V,O)*[web:1]
+
 
 ### Графики training loss и learning rate
 <img width="790" height="590" alt="Без названия" src="https://github.com/user-attachments/assets/9697cd44-c14f-4b11-bc81-f1dac4f35a90" />
@@ -235,6 +239,12 @@ python train_model.py
 | **Профессиональные термины** | 0 упоминаний | Ритм, синхронизация, эффекты |
 
 ---
+
+| БАЗОВАЯ МОДЕЛЬ | **+ LoRA адаптеры** |
+|----------------|---------------------|
+| ![Full weights](https://raw.githubusercontent.com/huggingface/peft/main/images/full_finetuning.png) | ![LoRA only](https://raw.githubusercontent.com/huggingface/peft/main/images/lora.png) |
+
+**Экономия:** 0.5B параметров → всего 25MB LoRA (vs 1GB full fine-tuning)**
 
 
 ## 5. Скриншоты, доп. информация
