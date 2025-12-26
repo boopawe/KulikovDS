@@ -168,9 +168,61 @@ python train_model.py
 | **`--max_length`** | `512` | Максимальная длина последовательности (prompt + response) |
 | **`--per_device_train_batch_size`** | `4` | Размер батча на GPU ( 4 примера за раз) |
 
-![LoRA Architecture](https://huggingface.co/datasets/huggingface/documentation-images/resolve/main/peft/lora_diagram.png)
+## Архитектура LoRA
 
-*LoRA добавляет низкоранговые матрицы ΔW = B×A только к весам attention (Q,K,V,O)*[web:1]
+LoRA (Low-Rank Adaptation) — это метод дообучения больших языковых моделей, при котором не изменяются все веса нейросети.  
+Вместо этого к замороженной весовой матрице добавляется низкоранговая поправка, что делает обучение лёгким и экономичным.
+
+![LoRA Architecture](https://huggingface.co/datasets/huggingface/documentation-images/resolve/main/peft/lora_diagram.png)
+*LoRA добавляет низкоранговые матрицы ΔW = B×A только к весам attention (Q, K, V, O).*
+
+---
+
+### Описание элементов схемы
+
+#### **1. Базовая матрица весов**
+Формула исходного слоя:
+\[
+h = W₀ \times x
+\]
+- **W₀** — исходные веса проекций внимания (`d × k`)
+- **x** — входной вектор (эмбеддинг)
+- **h** — результат слоя (output hidden state)
+
+#### **2. LoRA**
+Модифицированное выражение:
+\[
+h = (W₀ + ΔW) \times x = W₀ \times x + B \times A \times x
+\]
+
+| Матрица | Размер | Назначение | Примечание |
+|----------|---------|------------|-------------|
+| **A** | `d × r` | Сжатие (down-projection) | r ≪ d, уменьшает размерность |
+| **B** | `r × k` | Восстановление (up-projection) | Инициализация нулями |
+| **ΔW = B×A** | `d × k` | Поправка к основным весам | Обучаемые параметры |
+
+---
+
+### Параметры на рисунке
+
+| Параметр | Значение | Описание |
+|-----------|-----------|---------|
+| **r** | 32 | Ранг низкорангового приближения |
+| **α (alpha)** | 64 | Масштабный коэффициент (α/r регулирует силу адаптера) |
+| **Dropout** | 0.1 | Регуляризация LoRA весов |
+| **Target modules** | `["q_proj", "k_proj", "v_proj", "o_proj"]` | Адаптируемые части attention-блока |
+
+Формула масштабирования:
+\[
+ΔW × x = \frac{α}{r} × (B × A × x)
+\]
+
+---
+
+### Что обучается
+
+**Заморожены:** 99.9 % весов базовой модели (например, 1 GB для Qwen2.5‑0.5B)  
+**Обучаются:** только адаптеры **A** и **B** (~25 MB)
 
 
 ### Графики training loss и learning rate
@@ -240,11 +292,6 @@ python train_model.py
 
 ---
 
-| БАЗОВАЯ МОДЕЛЬ | **+ LoRA адаптеры** |
-|----------------|---------------------|
-| ![Full weights](https://raw.githubusercontent.com/huggingface/peft/main/images/full_finetuning.png) | ![LoRA only](https://raw.githubusercontent.com/huggingface/peft/main/images/lora.png) |
-
-**Экономия:** 0.5B параметров → всего 25MB LoRA (vs 1GB full fine-tuning)**
 
 
 ## 5. Скриншоты, доп. информация
