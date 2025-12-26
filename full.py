@@ -1,11 +1,6 @@
 # setup.py
-!pip install --upgrade pip
-!pip install --upgrade transformers peft datasets accelerate bitsandbytes
+!pip install --upgrade pip transformers datasets peft trl accelerate bitsandbytes
 
-# clonetemplate.py
-!git clone https://github.com/NS3TRap/LLM_LoRA_training.git
-%cd LLM_LoRA_training
-!ls -la
 
 # prepare_data.py
 with open('test_questions.txt', 'w', encoding='utf-8') as f:
@@ -20,6 +15,7 @@ print("test_questions.txt создан")
 
 # dataset.py
 import json
+
 data = [
     {"prompt": "Что такое видеомонтаж?", "response": "Видеомонтаж — это процесс создания единого видео из отдельных клипов путём их нарезки, склейки, добавления эффектов и звука."},
     {"prompt": "В чём основная задача видеомонтажа?", "response": "Основная задача видеомонтажа — создать логически связанный и эмоционально воздействующий рассказ из сырых видеоматериалов."},
@@ -164,8 +160,100 @@ data = [
     {"prompt": "Что такое Match Move?", "response": "Match Move отслеживает движение объекта для наложения эффектов."},
     {"prompt": "Что делает Content-Aware Fill?", "response": "Content-Aware Fill умно заполняет удалённые области похожим контентом."},
     {"prompt": "Для чего используют Roto Brush?", "response": "Roto Brush пиксельно выделяет движущиеся объекты для маскировки."},
-    {"prompt": "Что такое Morph Cut?", "response": "Morph Cut сглаживает переходы между похожими дублями говорящего."}
+    {"prompt": "Что такое Morph Cut?", "response": "Morph Cut сглаживает переходы между похожими дублями говорящего."},
+    {"prompt": "Что такое битрейт видео?", "response": "Битрейт видео — это объём данных, передаваемых в секунду; чем выше битрейт, тем лучше качество, но больше размер файла."},
+    {"prompt": "Для чего нужен proxy-режим в монтаже?", "response": "Proxy-режим нужен для ускорения работы с тяжёлыми 4K/8K файлами за счёт временной замены их на лёгкие копии."},
+    {"prompt": "Что такое транскодирование?", "response": "Транскодирование — это преобразование видео из одного кодека или формата в другой."},
+    {"prompt": "Как работает ключевой кадр (keyframe)?", "response": "Ключевой кадр фиксирует значение параметра в определённый момент времени, а программа интерполирует изменения между ними."},
+    {"prompt": "Что означает термин 'render' в видеомонтаже?", "response": "Render — это процесс окончательной обработки проекта в готовый видеофайл."},
+    {"prompt": "Что такое таймкод?", "response": "Таймкод — это временная метка, обозначающая точное положение кадра в формате часы:минуты:секунды:кадры."},
+    {"prompt": "Для чего нужен аудиометр в монтажной программе?", "response": "Аудиометр показывает уровень громкости звука, чтобы избежать перегрузки и обеспечить нормальную слышимость."},
+    {"prompt": "Что такое B-roll?", "response": "B-roll — дополнительные кадры, используемые для иллюстрации, поддержки повествования или маскировки монтажа."},
+    {"prompt": "Чем отличается A-roll от B-roll?", "response": "A-roll — основной материал (например, интервью), B-roll — сопроводительные кадры (действия, окружение)."},
+    {"prompt": "Что такое клип в монтаже?", "response": "Клип — это отдельный видео- или аудиофрагмент, импортированный в проект."},
+    {"prompt": "Для чего используется эффект блюра (blur)?", "response": "Эффект блюра размывает части кадра для фокусировки внимания, маскировки деталей или создания атмосферы."},
+    {"prompt": "Что такое шумоподавление в аудио?", "response": "Шумоподавление — это процесс удаления фоновых шумов (гул, шипение) из звуковой дорожки."},
+    {"prompt": "Что означает 'резать по звуку'?", "response": "Резать по звуку — значит синхронизировать монтажные точки с аудиособытиями, например, с ударом или словом."},
+    {"prompt": "Что такое зум-пан (Ken Burns effect)?", "response": "Зум-пан — эффект плавного масштабирования и перемещения по статичному изображению для создания движения."},
+    {"prompt": "Для чего нужен цветовой круг в грейдинге?", "response": "Цветовой круг помогает точно корректировать оттенки и настраивать цветовой баланс в сцене."},
+    {"prompt": "Что такое HDR в видео?", "response": "HDR (High Dynamic Range) — технология, расширяющая диапазон яркости и цвета для более реалистичного изображения."},
+    {"prompt": "Что означает 'сжатие по времени'?", "response": "Сжатие по времени — ускорение видеоряда для укладки в заданную длительность без потери смысла."},
+    {"prompt": "Для чего нужна сетка правил третей?", "response": "Сетка правил третей помогает компоновать кадр гармонично, размещая ключевые элементы на пересечениях линий."},
+    {"prompt": "Что такое саундтрек в контексте монтажа?", "response": "Саундтрек — фоновая музыка, сопровождающая видео и усиливающая эмоциональное восприятие."},
+    {"prompt": "Что означает 'чистый кадр'?", "response": "Чистый кадр — участок видео без текста, логотипов или других графических элементов для последующего использования."},
+    {"prompt": "Для чего нужен дублирующийся аудиоканал?", "response": "Дублирующийся аудиоканал используется для резервной записи или совмещения разных микрофонов."},
+    {"prompt": "Что такое offcut?", "response": "Offcut — отсечённый, неиспользованный фрагмент оригинального материала, отброшенный при монтаже."},
+    {"prompt": "Что такое динамический диапазон звука?", "response": "Динамический диапазон — разница между самым тихим и самым громким звуком в записи."},
+    {"prompt": "Для чего нужен компрессор в аудиомонтаже?", "response": "Компрессор сглаживает перепады громкости, делая звук более ровным и контролируемым."},
+    {"prompt": "Что такое гистограмма в цветокоррекции?", "response": "Гистограмма — график распределения яркости пикселей, помогающий корректировать экспозицию и контраст."},
+    {"prompt": "Что такое векторный скоп?", "response": "Векторный скоп — инструмент анализа цвета, показывающий насыщенность и оттенки в виде круговой диаграммы."},
+    {"prompt": "Что значит 'не выйти за Safe Margins'?", "response": "Не выйти за Safe Margins — значит размещать текст и важные элементы внутри безопасной зоны, видимой на всех экранах."},
+    {"prompt": "Что такое параллакс в моушн-графике?", "response": "Параллакс — эффект разной скорости движения слоёв, создающий иллюзию глубины."},
+    {"prompt": "Для чего нужен обратный монтаж?", "response": "Обратный монтаж используется для создания драматического эффекта или пересмотра событий в обратной хронологии."},
+    {"prompt": "Что такое временная линия (timeline)?", "response": "Временная линия — основная рабочая зона, где располагаются и редактируются все элементы проекта по времени."},
+    {"prompt": "Что означает 'отбить кадры'?", "response": "Отбить кадры — точно выбрать начало и конец каждого клипа для монтажа."},
+    {"prompt": "Для чего нужен плейбек в монтаже?", "response": "Плейбек — воспроизведение проекта в реальном времени для оценки результата и поиска ошибок."},
+    {"prompt": "Что такое слоевой монтаж?", "response": "Слоевой монтаж — наложение нескольких видеодорожек для создания сложных визуальных эффектов."},
+    {"prompt": "Что такое звуковая дорожка?", "response": "Звуковая дорожка — отдельная линия в таймлайне, содержащая аудиозапись (речь, музыку, эффекты)."},
+    {"prompt": "Для чего нужен эффект 'заморозка кадра'?", "response": "Эффект 'заморозка кадра' фиксирует изображение на несколько секунд для акцента или стилизации."},
+    {"prompt": "Что такое цветовая температура?", "response": "Цветовая температура измеряется в Кельвинах и определяет, насколько изображение тёплое (оранжевое) или холодное (синее)."},
+    {"prompt": "Что такое кадровая частота (frame rate)?", "response": "Кадровая частота — количество кадров, отображаемых в секунду; стандартные значения: 24, 25, 30, 60 fps."},
+    {"prompt": "Для чего нужен эффект 'дрожание камеры'?", "response": "Эффект 'дрожание камеры' имитирует ручную съёмку, добавляя реализм или напряжение сцене."},
+    {"prompt": "Что такое монохромный монтаж?", "response": "Монохромный монтаж — использование чёрно-белой палитры для создания стиля или акцента на форме и свете."},
+    {"prompt": "Что означает 'запас по движению'?", "response": "Запас по движению — дополнительные секунды до и после действия, необходимые для плавного монтажа и эффектов."},
+    {"prompt": "Для чего нужен скрининг?", "response": "Скрининг — показ готового проекта для команды или заказчика с последующим обсуждением правок."},
+    {"prompt": "Что такое реверсивный клип?", "response": "Реверсивный клип — видео, воспроизводимое в обратном направлении для создания необычного эффекта."},
+    {"prompt": "Что такое аудиосинхронизация?", "response": "Аудиосинхронизация — выравнивание звука и видео по временной шкале для точного совпадения."},
+    {"prompt": "Для чего нужен эффект 'глитч'?", "response": "Эффект 'глитч' имитирует цифровые сбои и используется для стилизации или передачи хаоса."},
+    {"prompt": "Что такое пиксельное разрешение?", "response": "Пиксельное разрешение — количество пикселей по горизонтали и вертикали (например, 1920×1080)."},
+    {"prompt": "Что означает 'сжать проект'?", "response": "Сжать проект — удалить неиспользуемые файлы и уменьшить его размер для архивации или передачи."},
+    {"prompt": "Для чего нужен эффект 'размытие в движении'?", "response": "Эффект 'размытие в движении' имитирует естественное размытие быстрых объектов, делая анимацию реалистичной."},
+    {"prompt": "Что такое звуковой лог?", "response": "Звуковой лог — таблица с описанием аудиофрагментов, используемая для быстрого поиска нужных записей."},
+    {"prompt": "Что означает 'отдать проект клиенту'?", "response": "Отдать проект клиенту — предоставить готовый видеофайл в согласованном формате и качестве."},
+    {"prompt": "Для чего нужен эффект 'тепло/холод' в грейдинге?", "response": "Эффект 'тепло/холод' задаёт эмоциональный тон: тепло — уют, воспоминания; холод — отчуждение, напряжение."},
+    {"prompt": "Что подразумевается под видеомонтажом?", "response": "Видеомонтаж — процесс объединения и упорядочивания видеокадров в единый материал."},
+    {"prompt": "Какую функцию выполняет видеомонтаж?", "response": "Он обеспечивает логичную структуру и целостность видеоряда."},
+    {"prompt": "Зачем нужен монтаж видеоматериала?", "response": "Для удаления лишних фрагментов и акцентирования важного."},
+    {"prompt": "Что является целью видеомонтажа?", "response": "Передача смысла и информации в удобной для восприятия форме."},
+    {"prompt": "Почему видеомонтаж важен при создании видео?", "response": "Он превращает отдельные кадры в законченный продукт."},
+    {"prompt": "Как монтаж влияет на восприятие видео?", "response": "Он определяет темп и понятность повествования."},
+    {"prompt": "Что формирует монтаж в видеоролике?", "response": "Структуру, ритм и последовательность событий."},
+    {"prompt": "Почему необработанное видео выглядит несвязным?", "response": "Отсутствует монтажная логика и структура."},
+    {"prompt": "Как монтаж помогает донести идею?", "response": "Через порядок кадров и визуальные акценты."},
+    {"prompt": "Что делает видеомонтаж эффективным?", "response": "Чёткая структура и соответствие замыслу автора."},
+    {"prompt": "Чем профессиональный монтаж отличается от любительского?", "response": "Профессиональный монтаж логичен и визуально аккуратен."},
+    {"prompt": "Как выглядит качественный видеомонтаж?", "response": "Видео воспринимается целостно и без резких ошибок."},
+    {"prompt": "Почему хороший монтаж малозаметен?", "response": "Он не отвлекает зрителя от содержания."},
+    {"prompt": "Что указывает на низкое качество монтажа?", "response": "Нарушенный ритм и случайные переходы."},
+    {"prompt": "Почему важен ритм в видеомонтаже?", "response": "Он влияет на динамику и восприятие информации."},
+    {"prompt": "Какие программы применяют для видеомонтажа?", "response": "Используются специализированные видеоредакторы."},
+    {"prompt": "Зачем нужны профессиональные монтажные программы?", "response": "Для точного контроля изображения и звука."},
+    {"prompt": "Почему выбор программы для монтажа важен?", "response": "Он влияет на качество и удобство работы."},
+    {"prompt": "Чем сложные видеоредакторы отличаются от простых?", "response": "Они поддерживают многослойный монтаж и эффекты."},
+    {"prompt": "Можно ли делать монтаж в бесплатных программах?", "response": "Да, при базовых требованиях к проекту."},
+    {"prompt": "Какие инструменты важны в видеоредакторе?", "response": "Таймлайн, работа со звуком и цветом."},
+    {"prompt": "Зачем монтажеру знать возможности программы?", "response": "Для эффективной и быстрой работы."},
+    {"prompt": "Как монтаж связан со звуком?", "response": "Звук синхронизируется с видеорядом."},
+    {"prompt": "Почему звук важен при монтаже?", "response": "Он усиливает восприятие видео."},
+    {"prompt": "Как монтаж влияет на атмосферу ролика?", "response": "Через темп и сочетание аудио и видео."},
+    {"prompt": "Что такое монтажная склейка?", "response": "Соединение двух кадров без перехода."},
+    {"prompt": "Для чего используют переходы?", "response": "Для плавного соединения сцен."},
+    {"prompt": "Что такое таймлайн в видеомонтаже?", "response": "Рабочая область для размещения клипов во времени."},
+    {"prompt": "Почему порядок кадров важен?", "response": "Он определяет смысл и логику видео."},
+    {"prompt": "Как монтаж влияет на длительность видео?", "response": "Он позволяет сократить или расширить материал."},
+    {"prompt": "Что такое монтажное решение?", "response": "Выбор способа соединения и показа кадров."},
+    {"prompt": "Почему монтаж считается творческим процессом?", "response": "Он требует интерпретации исходного материала."},
+    {"prompt": "Как монтаж помогает скрыть ошибки съёмки?", "response": "Путём замены и перестановки кадров."},
+    {"prompt": "Почему монтаж важен в учебных видео?", "response": "Он повышает ясность и усвоение материала."},
+    {"prompt": "Как видеомонтаж влияет на внимание зрителя?", "response": "Он регулирует темп подачи информации."},
+    {"prompt": "Что такое финальный рендер видео?", "response": "Экспорт готового проекта в видеофайл."},
+    {"prompt": "Почему монтаж завершается экспортом?", "response": "Для получения итогового видео."},
+    {"prompt": "Как монтаж объединяет видео и звук?", "response": "Создавая единый синхронизированный материал."},
+    {"prompt": "Почему видеомонтаж важен в медиа?", "response": "Он обеспечивает качество и понятность контента."},
+    {"prompt": "Что является результатом видеомонтажа?", "response": "Готовый структурированный видеоролик."}
 ]
+
+
 with open("data.jsonl", "w", encoding="utf-8") as f:
     for item in data:
         f.write(json.dumps(item, ensure_ascii=False) + "\n")
@@ -180,14 +268,15 @@ import torch
 
 model_name = "Qwen/Qwen2.5-0.5B-Instruct"
 
-tokenizer = AutoTokenizer.from_pretrained(model_name)
+tokenizer = AutoTokenizer.from_pretrained(model_name, trust_remote_code=True)
 if tokenizer.pad_token is None:
     tokenizer.pad_token = tokenizer.eos_token
 
 base_model = AutoModelForCausalLM.from_pretrained(
     model_name,
-    torch_dtype=torch.float16,
-    device_map="auto"
+    dtype=torch.float16,
+    device_map="auto",
+    trust_remote_code=True,
 )
 
 test_prompts = [
@@ -198,19 +287,21 @@ test_prompts = [
 ]
 
 def generate_plain(model, tokenizer, prompt):
-    inputs = tokenizer(prompt, return_tensors="pt").to(model.device)
+    text = f"Вопрос: {prompt}\nОтвет:"
+    inputs = tokenizer(text, return_tensors="pt").to(model.device)
 
     outputs = model.generate(
         **inputs,
-        max_new_tokens=70,
-        temperature=0.5,
+        max_new_tokens=50,
+        temperature=0.2,
         top_p=0.9,
-        repetition_penalty=1.25,
-        do_sample=True
+        do_sample=True,
+        repetition_penalty=1.05,
+        eos_token_id=tokenizer.eos_token_id,
     )
 
-    text = tokenizer.decode(outputs[0], skip_special_tokens=True)
-    return text[len(prompt):].strip()
+    decoded = tokenizer.decode(outputs[0], skip_special_tokens=True)
+    return decoded.split("Ответ:")[-1].strip()
 
 print("=== БАЗОВАЯ МОДЕЛЬ (ДО ОБУЧЕНИЯ) ===")
 base_answers = {}
@@ -221,25 +312,219 @@ for prompt in test_prompts:
 
 
 # learning.py
-!python train_model.py \
-  --model_name Qwen/Qwen2.5-0.5B-Instruct \
-  --data_path data.jsonl \
-  --output_dir ./my-lora-model-best \
-  --use_lora \
-  --lora_r 32 \
-  --lora_alpha 64 \
-  --learning_rate 2e-4 \
-  --num_train_epochs 10 \
-  --max_length 512 \
-  --per_device_train_batch_size 4
+import json
+import torch
+from datasets import load_dataset
+from transformers import (
+    AutoModelForCausalLM,
+    AutoTokenizer,
+    BitsAndBytesConfig,
+    TrainingArguments,
+    Trainer,
+)
+from peft import LoraConfig, get_peft_model
+from dataclasses import dataclass
+from typing import Dict, List
 
 
-# test_lora_model.py
+@dataclass
+class DataCollatorForCausalLM:
+    tokenizer: AutoTokenizer
+    pad_to_multiple_of: int = 8
+
+    def __call__(self, features: List[Dict]) -> Dict[str, torch.Tensor]:
+        input_ids = [f["input_ids"] for f in features]
+        labels = [f["labels"] for f in features]
+
+        batch = self.tokenizer.pad(
+            {"input_ids": input_ids},
+            padding=True,
+            pad_to_multiple_of=self.pad_to_multiple_of,
+            return_tensors="pt",
+        )
+
+        max_len = batch["input_ids"].shape[1]
+
+        padded_labels = []
+        for label in labels:
+            padded = label + [-100] * (max_len - len(label))
+            padded_labels.append(padded)
+
+        batch["labels"] = torch.tensor(padded_labels, dtype=torch.long)
+        return batch
+
+
+
+MODEL_NAME = "Qwen/Qwen2.5-0.5B-Instruct"
+DATA_PATH = "data.jsonl"
+MAX_LEN = 512
+
+tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME, trust_remote_code=True)
+if tokenizer.pad_token is None:
+    tokenizer.pad_token = tokenizer.eos_token
+
+
+bnb_config = BitsAndBytesConfig(
+    load_in_4bit=True,
+    bnb_4bit_compute_dtype=torch.bfloat16,
+    bnb_4bit_quant_type="nf4",
+    bnb_4bit_use_double_quant=True,
+)
+
+model = AutoModelForCausalLM.from_pretrained(
+    MODEL_NAME,
+    quantization_config=bnb_config,
+    device_map="auto",
+    trust_remote_code=True,
+)
+
+
+lora_config = LoraConfig(
+    r=32,
+    lora_alpha=64,
+    target_modules=[
+        "q_proj", "k_proj", "v_proj", "o_proj",
+        "gate_proj", "up_proj", "down_proj",
+    ],
+    lora_dropout=0.05,
+    bias="none",
+    task_type="CAUSAL_LM",
+)
+
+model = get_peft_model(model, lora_config)
+model.enable_input_require_grads()
+model.print_trainable_parameters()
+model.gradient_checkpointing_enable()
+model.config.use_cache = False
+
+
+raw_data = load_dataset("json", data_files=DATA_PATH, split="train")
+
+def format_row(example):
+    prompt = example["prompt"]
+    answer = example["response"]
+
+
+    full_text = (
+        f"<|im_start|>user\n{prompt}<|im_end|>\n"
+        f"<|im_start|>assistant\n{answer}<|im_end|>"
+    )
+
+
+    full_tokens = tokenizer(
+        full_text,
+        truncation=True,
+        max_length=MAX_LEN,
+        padding=False,
+    )
+
+    input_ids = full_tokens["input_ids"]
+
+
+    prompt_tokens = tokenizer(
+        f"<|im_start|>user\n{prompt}<|im_end|>\n<|im_start|>assistant\n",
+        truncation=True,
+        max_length=MAX_LEN,
+        padding=False,
+    )
+    prompt_len = min(len(prompt_tokens["input_ids"]), len(input_ids))
+
+    labels = input_ids.copy()
+    labels[:prompt_len] = [-100] * prompt_len
+
+    return {
+        "input_ids": input_ids,
+        "labels": labels,
+    }
+
+dataset = raw_data.map(format_row, remove_columns=raw_data.column_names)
+
+
+training_args = TrainingArguments(
+    output_dir="./my-lora-model-best",
+    per_device_train_batch_size=4,
+    gradient_accumulation_steps=4,
+    num_train_epochs=10,
+    learning_rate=2e-4,
+    warmup_ratio=0.03,
+    bf16=torch.cuda.is_bf16_supported(),
+    fp16=not torch.cuda.is_bf16_supported(),
+    optim="paged_adamw_8bit",
+    lr_scheduler_type="cosine",
+    max_grad_norm=1.0,
+    logging_steps=10,
+    save_steps=50,
+    report_to="none",
+)
+
+data_collator = DataCollatorForCausalLM(
+    tokenizer=tokenizer,
+    pad_to_multiple_of=8,
+)
+
+trainer = Trainer(
+    model=model,
+    args=training_args,
+    train_dataset=dataset,
+    data_collator=data_collator,
+)
+
+trainer.train()
+
+model.save_pretrained("./my-lora-model-best")
+tokenizer.save_pretrained("./my-lora-model-best")
+
+#table.py
+%matplotlib inline
+import matplotlib.pyplot as plt
+
+# предполагается, что trainer уже отработал: trainer.train()
+
+logs = trainer.state.log_history  # тут те же записи, что были бы в trainer_state.json
+
+steps = []
+loss = []
+lr = []
+epochs = []
+
+for log in logs:
+    if "loss" in log:
+        steps.append(log["step"])
+        loss.append(log["loss"])
+        lr.append(log.get("learning_rate", 0.0))
+        epochs.append(log.get("epoch", 0.0))
+
+# если epoch нет, нормализуем по шагам
+if not epochs or all(e == 0.0 for e in epochs):
+    max_step = max(steps) if steps else 1
+    epochs = [s / max_step for s in steps]
+
+plt.style.use("default")
+fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(8, 6))
+
+# 1) Training Loss
+ax1.plot(epochs, loss, linewidth=2)
+ax1.set_title("Training Loss")
+ax1.set_xlabel("Epoch")
+ax1.set_ylabel("Loss")
+ax1.grid(True, alpha=0.3)
+
+# 2) Learning Rate
+ax2.plot(epochs, lr, linewidth=2)
+ax2.set_title("Learning Rate")
+ax2.set_xlabel("Epoch")
+ax2.set_ylabel("Learning rate")
+ax2.grid(True, alpha=0.3)
+
+plt.tight_layout()
+plt.show()
+
+#test_lora_model.py
 from peft import PeftModel
 
 lora_model = PeftModel.from_pretrained(
     base_model,
-    "./my-lora-model-best"
+    "./my-lora-model-best",
 )
 
 print("\n=== ОБУЧЕННАЯ МОДЕЛЬ (ПОСЛЕ LoRA) ===")
